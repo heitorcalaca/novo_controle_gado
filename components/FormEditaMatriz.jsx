@@ -190,7 +190,7 @@ export default function FormEditaMatriz() {
       </div>
       <div className="w-4/6 pt-4">
         <button className="justify-center text-md w-full bg-green-500 border rounded py-3 px-2 text-white">
-          Salvar
+          Salvar Alterações
         </button>
       </div>
     </form>
