@@ -2,7 +2,7 @@ import ListaMatrizes from "@/components/ListaMatrizes";
 
 export default function Matrizes() {
   return (
-    <div>
+    <div className="container mx-auto">
       <ListaMatrizes />
     </div>
   );
