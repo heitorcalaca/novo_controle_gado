@@ -1,5 +1,7 @@
 "use client";
+import { getMatriz } from "@/lib/helper";
 import { useReducer } from "react";
+import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 
 const formReducer = (state, event) => {
@@ -10,17 +12,46 @@ const formReducer = (state, event) => {
 };
 
 export default function FormEditaMatriz() {
+  const handleGoBack = () => {
+    window.history.back();
+  };
+
   const formId = useSelector((state) => state.app.client.formId);
   const [formData, setFormData] = useReducer(formReducer, {});
+
+  const { isLoading, isError, data, error } = useQuery(["matriz", formId], () =>
+    getMatriz(formId)
+  );
+
+  if (isLoading) return <div>Carregando...</div>;
+  if (isError) return (<div>Erro no carregamento...</div>), console.log(error);
+
+  const {
+    numero,
+    nome,
+    //caracteristica,
+    dataNascimento,
+    proprietario,
+    //situacao,
+    nomePai,
+    //situacaoMae,
+    nomeMae,
+  } = data;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
   };
-
   return (
-    console.log(formId),
-    (
+    <div>
+      <div>
+        <button
+          className="justify-center mb-10 text-md w-1/12 bg-yellow-400 border rounded py-3 px-2 text-gray-500 border-0 font-bold"
+          onClick={handleGoBack}
+        >
+          Voltar
+        </button>
+      </div>
       <form onSubmit={handleSubmit}>
         <div className="grid lg:grid-cols-2 w-4/6 gap-4">
           <div className="input-type">
@@ -34,6 +65,7 @@ export default function FormEditaMatriz() {
               id="numero"
               type="number"
               onChange={setFormData}
+              defaultValue={numero}
               name="numero"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               placeholder="Número"
@@ -51,6 +83,7 @@ export default function FormEditaMatriz() {
               id="nome"
               type="text"
               onChange={setFormData}
+              defaultValue={nome}
               name="nome"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               placeholder="Nome"
@@ -89,6 +122,7 @@ export default function FormEditaMatriz() {
               id="date"
               type="date"
               onChange={setFormData}
+              defaultValue={dataNascimento}
               name="dataNascimento"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               placeholder="Nome"
@@ -106,6 +140,7 @@ export default function FormEditaMatriz() {
               id="prop"
               type="text"
               onChange={setFormData}
+              defaultValue={proprietario}
               name="proprietario"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               placeholder="Nome do Proprietário"
@@ -146,6 +181,7 @@ export default function FormEditaMatriz() {
               id="nomep"
               type="text"
               onChange={setFormData}
+              defaultValue={nomePai}
               name="nomePai"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               placeholder="Nome da Mãe"
@@ -186,6 +222,7 @@ export default function FormEditaMatriz() {
               id="nomem"
               type="text"
               onChange={setFormData}
+              defaultValue={nomeMae}
               name="nomeMae"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               placeholder="Nome da Mãe"
@@ -198,6 +235,6 @@ export default function FormEditaMatriz() {
           </button>
         </div>
       </form>
-    )
+    </div>
   );
 }
