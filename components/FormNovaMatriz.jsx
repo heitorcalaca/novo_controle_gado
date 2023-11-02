@@ -4,7 +4,6 @@ import { useQueryClient, useMutation } from "react-query";
 import { addMatriz } from "@/lib/helper";
 import Sucesso from "./sucesso";
 import Erro from "./erro";
-
 const formReducer = (state, event) => {
   return {
     ...state,
@@ -54,9 +53,9 @@ export default function FormNovaMatriz() {
   if (addMutation.isLoading) return <div>Loading...</div>;
   if (addMutation.isError)
     return <Erro message={addMutation.error.message}></Erro>;
-  if (addMutation.isSuccess)
+  if (addMutation.isSuccess) {
     return <Sucesso message={"Matriz Adicionada com Sucesso!"}></Sucesso>;
-
+  }
   return (
     <form onSubmit={handleSubmit}>
       <div className="grid lg:grid-cols-2 w-4/6 gap-4">

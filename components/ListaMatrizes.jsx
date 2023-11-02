@@ -4,6 +4,8 @@ import { GiCow } from "react-icons/gi";
 import { BiEdit, BiTrash } from "react-icons/bi";
 import { getMatrizes } from "@/lib/helper";
 import { useQuery } from "react-query";
+import { useDispatch } from "react-redux";
+import { updateAction } from "@/redux/reducer";
 
 export default function ListaMatrizes() {
   const { isLoading, isError, data, error } = useQuery("matriz", getMatrizes);
@@ -60,6 +62,11 @@ export default function ListaMatrizes() {
 }
 
 function Tr({ _id, numero, nome, proprietario, situacao }) {
+  const dispatch = useDispatch();
+  const onUpdate = () => {
+    dispatch(updateAction(_id));
+  };
+
   return (
     <tr className="bg-gray-50 text-center">
       <td className="px-16 py-2">
@@ -78,7 +85,7 @@ function Tr({ _id, numero, nome, proprietario, situacao }) {
       </td>
       <td className="px-16 py-2 flex justify-around gap-5">
         <Link href="/editaMatriz">
-          <button className="cursor">
+          <button className="cursor" onClick={onUpdate}>
             {" "}
             <BiEdit size={25} color="rgb(34,197,94)" />
           </button>
