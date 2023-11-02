@@ -1,5 +1,9 @@
 "use client";
 import { useReducer } from "react";
+import { useQueryClient, useMutation } from "react-query";
+import { addMatriz } from "@/lib/helper";
+import Sucesso from "./sucesso";
+import Erro from "./erro";
 
 const formReducer = (state, event) => {
   return {
@@ -10,11 +14,48 @@ const formReducer = (state, event) => {
 
 export default function FormNovaMatriz() {
   const [formData, setFormData] = useReducer(formReducer, {});
+  const addMutation = useMutation(addMatriz, {
+    onSuccess: () => {
+      console.log("Dados inseridos");
+    },
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    if (Object.keys(formData).length === 0)
+      return console.log("Não tem dados no fomulário");
+    let {
+      numero,
+      nome,
+      caracteristica,
+      dataNascimento,
+      proprietario,
+      situacao,
+      nomePai,
+      situacaoMae,
+      nomeMae,
+    } = formData;
+
+    const model = {
+      numero,
+      nome,
+      caracteristica,
+      dataNascimento,
+      proprietario,
+      situacao,
+      nomePai,
+      situacaoMae,
+      nomeMae,
+    };
+
+    addMutation.mutate(model);
   };
+
+  if (addMutation.isLoading) return <div>Loading...</div>;
+  if (addMutation.isError)
+    return <Erro message={addMutation.error.message}></Erro>;
+  if (addMutation.isSuccess)
+    return <Sucesso message={"Matriz Adicionada com Sucesso!"}></Sucesso>;
 
   return (
     <form onSubmit={handleSubmit}>
