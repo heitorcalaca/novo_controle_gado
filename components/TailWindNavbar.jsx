@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { GiBullHorns } from "react-icons/gi";
 
 const user = {
   name: "Tom Cook",
@@ -46,7 +47,7 @@ export default function Navbar() {
                     <div className="flex-shrink-0">
                       <img
                         className="h-8 w-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                        src="<GiBullHorns>"
                         alt="Your Company"
                       />
                     </div>

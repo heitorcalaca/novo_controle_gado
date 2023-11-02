@@ -1,8 +1,8 @@
 import { Schema, models, model } from "mongoose";
 
 const matrizSchema = new Schema({
-  numero: Number,
-  nome: String,
+  numero: { type: Number, unique: true },
+  nome: { type: String, unique: true },
   caracteristica: String,
   dataNascimento: Date,
   proprietario: String,
