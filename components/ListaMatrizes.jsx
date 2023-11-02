@@ -1,9 +1,16 @@
+"use client";
 import Link from "next/link";
 import { GiCow } from "react-icons/gi";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import data from "../database/data.json";
+import { getMatrizes } from "@/lib/helper";
+import { useQuery } from "react-query";
 
 export default function ListaMatrizes() {
+  const { isLoading, isError, data, error } = useQuery("matriz", getMatrizes);
+
+  if (isLoading) return <div className="">Carregando Matrizes...</div>;
+  if (isError) return <div>Algo deu errado!</div>;
+
   return (
     <div>
       <div>

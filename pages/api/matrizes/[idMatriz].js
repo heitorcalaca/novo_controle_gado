@@ -13,10 +13,10 @@ export default async function handler(req, res) {
         await getMatriz(req, res);
         break;
       case "PUT":
-        await putMatriz(req, res);
+        await putMatrizes(req, res);
         break;
       case "DELETE":
-        await deleteMatriz(req, res);
+        await deleteMatrizes(req, res);
         break;
       default:
         res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
