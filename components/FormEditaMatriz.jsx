@@ -1,8 +1,9 @@
 "use client";
-import { getMatriz, updateMatriz } from "@/lib/helper";
+import { getMatriz, getMatrizes, updateMatriz } from "@/lib/helper";
 import { useReducer } from "react";
-import { useQuery, useMutation } from "react-query";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useSelector } from "react-redux";
+import Sucesso from "./sucesso";
 
 const formReducer = (state, event) => {
   return {
@@ -12,10 +13,7 @@ const formReducer = (state, event) => {
 };
 
 export default function FormEditaMatriz() {
-  const handleGoBack = () => {
-    window.history.back();
-  };
-
+  const queryClient = useQueryClient();
   const formId = useSelector((state) => state.app.client.formId);
   const [formData, setFormData] = useReducer(formReducer, {});
 
@@ -26,7 +24,7 @@ export default function FormEditaMatriz() {
     (newData) => updateMatriz(formId, newData),
     {
       onSuccess: async (data) => {
-        console.log("daods editados");
+        queryClient.prefetchQuery("matriz", getMatrizes);
       },
     }
   );
@@ -52,18 +50,16 @@ export default function FormEditaMatriz() {
     await UpdateMutation.mutate(updated);
   };
 
-  const formattedDate = new Date(dataNascimento).toISOString().split("T")[0];
+  if (UpdateMutation.isSuccess) {
+    return <Sucesso message={"Matriz Editada com Sucesso!"}></Sucesso>;
+  }
+
+  const formattedDate = dataNascimento
+    ? new Date(dataNascimento).toISOString().split("T")[0]
+    : "";
 
   return (
     <div>
-      <div>
-        <button
-          className="justify-center mb-10 text-md w-1/12 bg-yellow-400 rounded py-3 px-2 text-gray-500 border-0 font-bold"
-          onClick={handleGoBack}
-        >
-          Voltar
-        </button>
-      </div>
       <form onSubmit={handleSubmit}>
         <div className="grid lg:grid-cols-2 w-4/6 gap-4">
           <div className="input-type">
@@ -135,7 +131,7 @@ export default function FormEditaMatriz() {
               id="date"
               type="date"
               onChange={setFormData}
-              value={formattedDate}
+              defaultValue={formattedDate}
               name="dataNascimento"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               placeholder="Nome"

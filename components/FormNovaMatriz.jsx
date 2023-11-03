@@ -12,10 +12,6 @@ const formReducer = (state, event) => {
 };
 
 export default function FormNovaMatriz() {
-  const handleGoBack = () => {
-    window.history.back();
-  };
-
   const [formData, setFormData] = useReducer(formReducer, {});
   const addMutation = useMutation(addMatriz, {
     onSuccess: () => {
@@ -62,14 +58,6 @@ export default function FormNovaMatriz() {
   }
   return (
     <div>
-      <div>
-        <button
-          className="justify-center mb-10 text-md w-1/12 bg-yellow-400 rounded py-3 px-2 text-gray-500 border-0 font-bold"
-          onClick={handleGoBack}
-        >
-          Voltar
-        </button>
-      </div>
       <form onSubmit={handleSubmit}>
         <div className="grid lg:grid-cols-2 w-4/6 gap-4">
           <div className="input-type">
