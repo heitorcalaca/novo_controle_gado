@@ -1,5 +1,5 @@
 import connectMongo from "@/database/conn";
-import { deleteMatriz, getMatriz, putMatriz } from "@/database/controller";
+import { deleteMatrizes, getMatriz, putMatrizes } from "@/database/controller";
 
 export default async function handler(req, res) {
   try {

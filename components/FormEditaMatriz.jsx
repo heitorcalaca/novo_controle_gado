@@ -1,7 +1,7 @@
 "use client";
-import { getMatriz } from "@/lib/helper";
+import { getMatriz, updateMatriz } from "@/lib/helper";
 import { useReducer } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { useSelector } from "react-redux";
 
 const formReducer = (state, event) => {
@@ -22,6 +22,14 @@ export default function FormEditaMatriz() {
   const { isLoading, isError, data, error } = useQuery(["matriz", formId], () =>
     getMatriz(formId)
   );
+  const UpdateMutation = useMutation(
+    (newData) => updateMatriz(formId, newData),
+    {
+      onSuccess: async (data) => {
+        console.log("daods editados");
+      },
+    }
+  );
 
   if (isLoading) return <div>Carregando...</div>;
   if (isError) return (<div>Erro no carregamento...</div>), console.log(error);
@@ -29,19 +37,24 @@ export default function FormEditaMatriz() {
   const {
     numero,
     nome,
-    //caracteristica,
+    caracteristica,
     dataNascimento,
     proprietario,
-    //situacao,
+    situacao,
     nomePai,
-    //situacaoMae,
+    situacaoMae,
     nomeMae,
   } = data;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    let updated = Object.assign({}, data, formData);
+    console.log(updated);
+    await UpdateMutation.mutate(updated);
   };
+
+  const formattedDate = new Date(dataNascimento).toISOString().split("T")[0];
+
   return (
     <div>
       <div>
@@ -102,6 +115,7 @@ export default function FormEditaMatriz() {
                 id="car"
                 name="caracteristica"
                 onChange={setFormData}
+                defaultValue={caracteristica}
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               >
                 <option defaultValue={0}>Selecione a Característica</option>
@@ -122,7 +136,7 @@ export default function FormEditaMatriz() {
               id="date"
               type="date"
               onChange={setFormData}
-              defaultValue={dataNascimento}
+              value={formattedDate}
               name="dataNascimento"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               placeholder="Nome"
@@ -159,6 +173,7 @@ export default function FormEditaMatriz() {
                 id="sit"
                 name="situacao"
                 onChange={setFormData}
+                defaultValue={situacao}
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               >
                 <option defaultValue={0}>Selecione a Situação</option>
@@ -200,6 +215,7 @@ export default function FormEditaMatriz() {
                 id="sitm"
                 name="situacaoMae"
                 onChange={setFormData}
+                defaultValue={situacaoMae}
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               >
                 <option defaultValue={0}>Selecione a Situação</option>
