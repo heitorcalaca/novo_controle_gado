@@ -49,7 +49,6 @@ export default function FormEditaMatriz() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let updated = Object.assign({}, data, formData);
-    console.log(updated);
     await UpdateMutation.mutate(updated);
   };
 

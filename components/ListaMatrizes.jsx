@@ -5,7 +5,7 @@ import { BiEdit, BiTrash } from "react-icons/bi";
 import { getMatrizes } from "@/lib/helper";
 import { useQuery } from "react-query";
 import { useDispatch } from "react-redux";
-import { updateAction } from "@/redux/reducer";
+import { updateAction, deleteAction } from "@/redux/reducer";
 
 export default function ListaMatrizes() {
   const { isLoading, isError, data, error } = useQuery("matriz", getMatrizes);
@@ -63,8 +63,13 @@ export default function ListaMatrizes() {
 
 function Tr({ _id, numero, nome, proprietario, situacao }) {
   const dispatch = useDispatch();
+
   const onUpdate = () => {
     dispatch(updateAction(_id));
+  };
+
+  const onDelete = () => {
+    dispatch(deleteAction(_id));
   };
 
   return (
@@ -90,7 +95,7 @@ function Tr({ _id, numero, nome, proprietario, situacao }) {
             <BiEdit size={25} color="rgb(34,197,94)" />
           </button>
         </Link>
-        <button className="cursor">
+        <button className="cursor" onClick={onDelete}>
           {" "}
           <BiTrash size={25} color="rgb(244,63,94)" />{" "}
         </button>
