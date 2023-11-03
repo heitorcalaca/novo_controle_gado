@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
       <Provider store={store}>
         <html className="h-full bg-gray-100" lang="en">
           <body className="h-full">
-            <div>
+            <div id="__next">
               <TailWindNavbar />
               {children}
             </div>

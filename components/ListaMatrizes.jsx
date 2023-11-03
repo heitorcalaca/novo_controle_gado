@@ -1,10 +1,11 @@
 "use client";
+import React, { useState } from "react";
+import Modal from "react-modal";
 import Link from "next/link";
-import { GiCow } from "react-icons/gi";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import { getMatrizes } from "@/lib/helper";
-import { useQuery } from "react-query";
-import { useDispatch } from "react-redux";
+import { deleteMatriz, getMatrizes } from "@/lib/helper";
+import { useQuery, useQueryClient } from "react-query";
+import { useDispatch, useSelector } from "react-redux";
 import { updateAction, deleteAction } from "@/redux/reducer";
 
 export default function ListaMatrizes() {
@@ -15,22 +16,6 @@ export default function ListaMatrizes() {
 
   return (
     <div>
-      <div>
-        <div className="container mx-auto flex justify-between py-5 border-b">
-          <div className="left flex gap-3">
-            <Link
-              href="/novaMatriz"
-              className="flex bg-green-500 text-white px-4 py-2 border rounded-md hover:bg-slate-400"
-            >
-              Nova Matriz{" "}
-              <span className="pl-2">
-                {" "}
-                <GiCow size={23} />{" "}
-              </span>
-            </Link>
-          </div>
-        </div>
-      </div>
       <table className="min-w-full table-auto">
         <thead>
           <tr className="bg-gray-600">
