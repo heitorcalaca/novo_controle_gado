@@ -37,10 +37,14 @@ export default function FormEditaMatriz({ modalEditaIsOpen, closeEditaModal }) {
   const formId = useSelector((state) => state.app.client.formId);
   const [formData, setFormData] = useReducer(formReducer, {});
 
-  const { isLoading, isError, data, error } = useQuery(
+  const { isLoading, isError, data, error, refetch } = useQuery(
     ["matriz", formId],
+    {
+      refetchOnWindowFocus: true,
+    },
     () => {
       if (!formId) return Promise.resolve(null); // Evitar consulta vazia
+      console.log("blalvalça");
       return getMatriz(formId);
     }
   );
