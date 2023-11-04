@@ -2,7 +2,7 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import TailWindNavbar from "@/components/TailWindNavbar";
+
 import store from "@/redux/store";
 import { Provider } from "react-redux";
 
@@ -16,10 +16,7 @@ export default function RootLayout({ children }) {
       <Provider store={store}>
         <html className="h-full bg-gray-100" lang="en">
           <body className="h-full">
-            <div id="__next">
-              <TailWindNavbar />
-              {children}
-            </div>
+            <div id="__next">{children}</div>
           </body>
         </html>
       </Provider>

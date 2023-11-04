@@ -70,8 +70,9 @@ export default function FormNovaMatriz({ modalNovaIsOpen, closeNovaModal }) {
   };
 
   if (addMutation.isLoading) return <div>Loading...</div>;
-  if (addMutation.isError)
+  if (addMutation.isError) {
     return <Erro message={addMutation.error.message}></Erro>;
+  }
   if (addMutation.isSuccess) {
     return <Sucesso message={"Matriz Adicionada com Sucesso!"}></Sucesso>;
   }

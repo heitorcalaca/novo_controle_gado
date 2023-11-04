@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useQueryClient, useMutation } from "react-query";
 import { deleteMatriz, getMatrizes } from "@/lib/helper";
 import { deleteAction, modalOpenAction, updateAction } from "@/redux/reducer";
-import Sucesso from "@/components/sucesso";
 import FormEditaMatriz from "@/components/FormEditaMatriz";
 import FormNovaMatriz from "@/components/FormNovaMatriz";
 
@@ -53,15 +52,6 @@ export default function Matrizes() {
     }
   }, [deleteId]);
 
-  const UpdateMutation = useMutation(
-    (newData) => updateMatriz(formId, newData),
-    {
-      onSuccess: async (data) => {
-        queryClient.prefetchQuery("matriz", getMatrizes);
-      },
-    }
-  );
-
   const handleDelete = async () => {
     if (deleteId) {
       await deleteMatriz(deleteId);
@@ -78,10 +68,6 @@ export default function Matrizes() {
   const onNova = () => {
     openNovaModal();
   };
-
-  if (UpdateMutation.isSuccess) {
-    return <Sucesso message={"Matriz Editada com Sucesso!"}></Sucesso>;
-  }
 
   return (
     <div>

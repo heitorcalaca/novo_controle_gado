@@ -1,45 +1,67 @@
 "use client";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
 import { getMatrizes } from "@/lib/helper";
 import { useQuery } from "react-query";
 import { useDispatch } from "react-redux";
 import { updateAction, deleteAction, modalOpenAction } from "@/redux/reducer";
+import { useRouter } from "next/router";
 
 export default function ListaMatrizes() {
   const { isLoading, isError, data, error } = useQuery("matriz", getMatrizes);
+  const [searchTerm, setSearchTerm] = useState("");
 
   if (isLoading) return <div className="">Carregando Matrizes...</div>;
   if (isError) return <div>Algo deu errado!</div>;
 
+  const filteredData = data.filter(
+    (matriz) =>
+      matriz.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      matriz.numero.toString().includes(searchTerm)
+  );
+
   return (
     <div>
-      <table className="min-w-full table-auto">
-        <thead>
-          <tr className="bg-gray-600">
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Numero</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Nome</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Proprietário</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Situação</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Ações</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-gray-200">
-          {data.map((obj, i) => (
-            <Tr {...obj} key={i} />
-          ))}
-        </tbody>
-      </table>
+      <div className=" ">
+        <form>
+          <input
+            className="w-full px-3 py-2 mb-3 mt-3 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-transparent"
+            type="search"
+            placeholder="Pesquisa..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </form>
+      </div>
+
+      <div>
+        <table className="min-w-full table-auto">
+          <thead>
+            <tr className="bg-gray-600">
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Numero</span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Nome</span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Proprietário</span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Situação</span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Ações</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-gray-200">
+            {filteredData.map((obj, i) => (
+              <Tr {...obj} key={i} />
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

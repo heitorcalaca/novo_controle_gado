@@ -1,6 +1,6 @@
 "use client";
 import { getMatriz, getMatrizes, updateMatriz } from "@/lib/helper";
-import { useReducer } from "react";
+import { useReducer, useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useSelector, useDispatch } from "react-redux";
 import Sucesso from "./sucesso";
@@ -45,7 +45,7 @@ export default function FormEditaMatriz({ modalEditaIsOpen, closeEditaModal }) {
     }
   );
 
-  const UpdateMutation = useMutation(
+  const updateMutation = useMutation(
     (newData) => updateMatriz(formId, newData),
     {
       onSuccess: async (data) => {
@@ -83,7 +83,7 @@ export default function FormEditaMatriz({ modalEditaIsOpen, closeEditaModal }) {
     e.preventDefault();
     try {
       let updated = Object.assign({}, data, formData);
-      await UpdateMutation.mutate(updated);
+      await updateMutation.mutate(updated);
     } catch (error) {
       console.error("Erro", error);
     }
