@@ -35,6 +35,28 @@ export async function getMatriz(req, res) {
     res.status(500).json({ error: "Não foi possível encontrar a matriz...!" });
   }
 }
+// GET: http://localhost:3000/api/matrizes/nome
+export async function getMatrizNome(req, res) {
+  const { nomeMatriz } = req.query;
+
+  if (!nomeMatriz) {
+    return res.status(400).json({ error: "Nenhum nome de matriz fornecido" });
+  }
+
+  try {
+    const matriz = await Matrizes.findOne({ nome: nomeMatriz });
+
+    if (!matriz) {
+      return res.status(404).json({ error: "Matriz não encontrada" });
+    }
+
+    return res.status(200).json(matriz);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Não foi possível encontrar a matriz" });
+  }
+}
 
 //POST: http://localhost:3000/api/matrizes
 export async function postMatrizes(req, res) {

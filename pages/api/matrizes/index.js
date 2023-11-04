@@ -1,6 +1,7 @@
 import connectMongo from "@/database/conn";
 import {
   deleteMatrizes,
+  getMatrizNome,
   getMatrizes,
   postMatrizes,
   putMatrizes,
@@ -15,6 +16,11 @@ export default async function handler(req, res) {
 
   // type of request
   const { method } = req;
+
+  if (method === "GET" && req.query.nomeMatriz) {
+    console.log("deu nome");
+    return getMatrizNome(req, res);
+  }
 
   switch (method) {
     case "GET":
