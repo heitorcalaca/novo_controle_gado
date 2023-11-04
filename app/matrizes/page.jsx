@@ -1,39 +1,30 @@
 "use client";
 import ListaMatrizes from "@/components/ListaMatrizes";
-import Link from "next/link";
 import { GiCow } from "react-icons/gi";
-import { useEffect, useState, useReducer } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
-import { useQueryClient, useMutation, useQuery } from "react-query";
-import { deleteMatriz, getMatrizes, getMatriz } from "@/lib/helper";
-import { deleteAction, modalOpenAction } from "@/redux/reducer";
+import { useQueryClient, useMutation } from "react-query";
+import { deleteMatriz, getMatrizes } from "@/lib/helper";
+import { deleteAction, modalOpenAction, updateAction } from "@/redux/reducer";
 import Sucesso from "@/components/sucesso";
 import FormEditaMatriz from "@/components/FormEditaMatriz";
+import FormNovaMatriz from "@/components/FormNovaMatriz";
 
 Modal.setAppElement("#__next");
 
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    borderRadius: "10px",
-  },
-};
-
 export default function Matrizes() {
   const deleteId = useSelector((state) => state.app.client.deleteId);
+
   const modalEditaIsOpen = useSelector(
     (state) => state.app.client.modalEditaIsOpen
   );
+
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
   const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
+  const [modalNovaIsOpen, setModalNovaIsOpen] = useState(false);
 
   const openDeleteModal = () => {
     setModalDeleteIsOpen(true);
@@ -45,6 +36,15 @@ export default function Matrizes() {
 
   const closeEditaModal = () => {
     dispatch(modalOpenAction());
+    dispatch(updateAction(null));
+  };
+
+  const openNovaModal = () => {
+    setModalNovaIsOpen(true);
+  };
+
+  const closeNovaModal = () => {
+    setModalNovaIsOpen(false);
   };
 
   useEffect(() => {
@@ -75,6 +75,10 @@ export default function Matrizes() {
     closeDeleteModal();
   };
 
+  const onNova = () => {
+    openNovaModal();
+  };
+
   if (UpdateMutation.isSuccess) {
     return <Sucesso message={"Matriz Editada com Sucesso!"}></Sucesso>;
   }
@@ -83,8 +87,8 @@ export default function Matrizes() {
     <div>
       <div className="container mx-auto flex justify-between py-5 border-b">
         <div className="left flex gap-3">
-          <Link
-            href="/novaMatriz"
+          <button
+            onClick={onNova}
             className="flex bg-green-500 text-white px-4 py-2 border rounded-md hover:bg-slate-400"
           >
             Nova Matriz{" "}
@@ -92,7 +96,7 @@ export default function Matrizes() {
               {" "}
               <GiCow size={23} />{" "}
             </span>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -115,6 +119,13 @@ export default function Matrizes() {
           closeEditaModal={closeEditaModal}
         />
       }
+
+      {
+        <FormNovaMatriz
+          modalNovaIsOpen={modalNovaIsOpen}
+          closeNovaModal={closeNovaModal}
+        ></FormNovaMatriz>
+      }
     </div>
   );
 }
@@ -125,6 +136,21 @@ function ComponenteDelete({
   handleDelete,
   handleCancel,
 }) {
+  const customStyles = {
+    overlay: {
+      backgroundColor: "rgba(150, 150, 150, 0.75)",
+    },
+
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      borderRadius: "10px",
+    },
+  };
   return (
     <Modal
       isOpen={modalDeleteIsOpen}

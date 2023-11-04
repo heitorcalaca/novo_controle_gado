@@ -2,9 +2,10 @@
 import { getMatriz, getMatrizes, updateMatriz } from "@/lib/helper";
 import { useReducer } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Sucesso from "./sucesso";
 import Modal from "react-modal";
+import { modalOpenAction } from "@/redux/reducer";
 
 const customStyles = {
   content: {
@@ -32,23 +33,39 @@ const formReducer = (state, event) => {
 
 export default function FormEditaMatriz({ modalEditaIsOpen, closeEditaModal }) {
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
   const formId = useSelector((state) => state.app.client.formId);
   const [formData, setFormData] = useReducer(formReducer, {});
 
-  const { isLoading, isError, data, error } = useQuery(["matriz", formId], () =>
-    getMatriz(formId)
+  const { isLoading, isError, data, error } = useQuery(
+    ["matriz", formId],
+    () => {
+      if (!formId) return Promise.resolve(null); // Evitar consulta vazia
+      return getMatriz(formId);
+    }
   );
+
   const UpdateMutation = useMutation(
     (newData) => updateMatriz(formId, newData),
     {
       onSuccess: async (data) => {
-        queryClient.prefetchQuery("matriz", getMatrizes);
+        if (data.success) {
+          queryClient.prefetchQuery("matriz", getMatrizes);
+          dispatch(modalOpenAction());
+        } else {
+          console.log("Erro", data.error);
+        }
       },
     }
   );
 
-  if (isLoading) return <div>Carregando...</div>;
-  if (isError) return (<div>Erro no carregamento...</div>), console.log(error);
+  // Verificar se formId está definido e data está carregado
+  if (!formId || isLoading) return <div></div>;
+
+  if (isError) {
+    console.log(error);
+    return <div>Erro no carregamento...</div>;
+  }
 
   const {
     numero,
@@ -64,13 +81,13 @@ export default function FormEditaMatriz({ modalEditaIsOpen, closeEditaModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let updated = Object.assign({}, data, formData);
-    await UpdateMutation.mutate(updated);
+    try {
+      let updated = Object.assign({}, data, formData);
+      await UpdateMutation.mutate(updated);
+    } catch (error) {
+      console.error("Erro", error);
+    }
   };
-
-  if (UpdateMutation.isSuccess) {
-    return <Sucesso message={"Matriz Editada com Sucesso!"}></Sucesso>;
-  }
 
   const formattedDate = dataNascimento
     ? new Date(dataNascimento).toISOString().split("T")[0]
@@ -82,7 +99,6 @@ export default function FormEditaMatriz({ modalEditaIsOpen, closeEditaModal }) {
       onRequestClose={closeEditaModal}
       style={customStyles}
       contentLabel="Example Modal"
-      //shouldCloseOnOverlayClick={false}
     >
       <div>
         <h1 className="text-center font-bold text-2xl py-2 mb-7 bg-zinc-300 rounded-lg">

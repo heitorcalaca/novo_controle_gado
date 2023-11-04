@@ -1,13 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import Modal from "react-modal";
-import Link from "next/link";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import { deleteMatriz, getMatrizes } from "@/lib/helper";
-import { useQuery, useQueryClient } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
+import { getMatrizes } from "@/lib/helper";
+import { useQuery } from "react-query";
+import { useDispatch } from "react-redux";
 import { updateAction, deleteAction, modalOpenAction } from "@/redux/reducer";
-import { ComponenteEdita } from "@/app/matrizes/page";
 
 export default function ListaMatrizes() {
   const { isLoading, isError, data, error } = useQuery("matriz", getMatrizes);
