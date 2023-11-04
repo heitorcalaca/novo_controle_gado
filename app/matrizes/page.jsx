@@ -2,12 +2,14 @@
 import ListaMatrizes from "@/components/ListaMatrizes";
 import Link from "next/link";
 import { GiCow } from "react-icons/gi";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useReducer } from "react";
 import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
-import { useQueryClient } from "react-query";
-import { deleteMatriz, getMatrizes } from "@/lib/helper";
-import { deleteAction } from "@/redux/reducer";
+import { useQueryClient, useMutation, useQuery } from "react-query";
+import { deleteMatriz, getMatrizes, getMatriz } from "@/lib/helper";
+import { deleteAction, modalOpenAction } from "@/redux/reducer";
+import Sucesso from "@/components/sucesso";
+import FormEditaMatriz from "@/components/FormEditaMatriz";
 
 Modal.setAppElement("#__next");
 
@@ -25,24 +27,40 @@ const customStyles = {
 
 export default function Matrizes() {
   const deleteId = useSelector((state) => state.app.client.deleteId);
+  const modalEditaIsOpen = useSelector(
+    (state) => state.app.client.modalEditaIsOpen
+  );
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
 
-  const openModal = () => {
-    setIsOpen(true);
+  const openDeleteModal = () => {
+    setModalDeleteIsOpen(true);
   };
 
-  const closeModal = () => {
-    setIsOpen(false);
+  const closeDeleteModal = () => {
+    setModalDeleteIsOpen(false);
+  };
+
+  const closeEditaModal = () => {
+    dispatch(modalOpenAction());
   };
 
   useEffect(() => {
     if (deleteId) {
-      openModal();
+      openDeleteModal();
     }
   }, [deleteId]);
+
+  const UpdateMutation = useMutation(
+    (newData) => updateMatriz(formId, newData),
+    {
+      onSuccess: async (data) => {
+        queryClient.prefetchQuery("matriz", getMatrizes);
+      },
+    }
+  );
 
   const handleDelete = async () => {
     if (deleteId) {
@@ -54,8 +72,12 @@ export default function Matrizes() {
 
   const handleCancel = async () => {
     await dispatch(deleteAction(null));
-    closeModal();
+    closeDeleteModal();
   };
+
+  if (UpdateMutation.isSuccess) {
+    return <Sucesso message={"Matriz Editada com Sucesso!"}></Sucesso>;
+  }
 
   return (
     <div>
@@ -80,28 +102,33 @@ export default function Matrizes() {
 
       {deleteId && (
         <ComponenteDelete
-          modalIsOpen={modalIsOpen}
-          openModal={openModal}
-          closeModal={closeModal}
+          modalDeleteIsOpen={modalDeleteIsOpen}
+          closeDeleteModal={closeDeleteModal}
           handleCancel={handleCancel}
           handleDelete={handleDelete}
         />
       )}
+
+      {
+        <FormEditaMatriz
+          modalEditaIsOpen={modalEditaIsOpen}
+          closeEditaModal={closeEditaModal}
+        />
+      }
     </div>
   );
 }
 
 function ComponenteDelete({
-  modalIsOpen,
-  openModal,
-  closeModal,
+  modalDeleteIsOpen,
+  closeDeleteModal,
   handleDelete,
   handleCancel,
 }) {
   return (
     <Modal
-      isOpen={modalIsOpen}
-      onRequestClose={closeModal}
+      isOpen={modalDeleteIsOpen}
+      onRequestClose={closeDeleteModal}
       style={customStyles}
       contentLabel="Example Modal"
       shouldCloseOnOverlayClick={false}

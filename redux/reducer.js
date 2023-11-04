@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  client: { toggleForm: false, formId: undefined, deleteId: null },
+  client: { modalEditaIsOpen: false, formId: undefined, deleteId: null },
 };
 
 export const reducerSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    toggleChangeAction: (state) => {
-      state.client.toggleForm = !state.client.toggleForm;
+    modalOpenAction: (state) => {
+      state.client.modalEditaIsOpen = !state.client.modalEditaIsOpen;
     },
 
     updateAction: (state, action) => {
@@ -22,6 +22,6 @@ export const reducerSlice = createSlice({
   },
 });
 
-export const { toggleChangeAction, updateAction, deleteAction } =
+export const { modalOpenAction, updateAction, deleteAction } =
   reducerSlice.actions;
 export default reducerSlice.reducer;
