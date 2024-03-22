@@ -4,6 +4,8 @@ import {
   getMatrizes,
   postMatrizes,
   putMatrizes,
+  checkNumeroExists,
+  checkNomeExists,
 } from "@/database/controller";
 
 export default async function handler(req, res) {
@@ -18,7 +20,14 @@ export default async function handler(req, res) {
 
   switch (method) {
     case "GET":
-      getMatrizes(req, res);
+      if (req.query.numero) {
+        checkNumeroExists(req, res);
+      }
+      if (req.query.nome) {
+        checkNomeExists(req, res);
+      } else {
+        getMatrizes(req, res);
+      }
       break;
     case "POST":
       postMatrizes(req, res);

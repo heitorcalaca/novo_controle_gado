@@ -11,6 +11,7 @@ export async function getMatrizes(req, res) {
 
     res.status(200).json(matrizes);
   } catch (error) {
+    console.error("Error while fetching data: ", error);
     res.status(500).json({ error: "Error While Fetching Data" });
   }
 }
@@ -21,7 +22,9 @@ export async function getMatriz(req, res) {
     const { idMatriz } = req.query;
 
     if (idMatriz) {
-      const matriz = await Matrizes.findById(idMatriz);
+      const matriz = await Matrizes.findById(idMatriz).catch((error) => {
+        res.status(500).json({ error: "Erro ao buscar dados" });
+      });
 
       if (!matriz) {
         return res.status(404).json({ error: "Matriz não encontrada" });
@@ -33,6 +36,51 @@ export async function getMatriz(req, res) {
     }
   } catch (error) {
     res.status(500).json({ error: "Não foi possível encontrar a matriz...!" });
+  }
+}
+
+export async function checkNumeroExists(req, res) {
+  try {
+    const { numero } = req.query;
+    if (numero) {
+      const matrizes = await Matrizes.find({ numero: numero });
+      if (matrizes) {
+        return res
+          .status(200)
+          .json({
+            exists: true,
+            message: "Número já existe no banco de dados",
+          });
+      } else {
+        return res
+          .status(200)
+          .json({ exists: false, message: "Número disponível" });
+      }
+    }
+  } catch (error) {
+    console.error("Error while checking if number exists: ", error);
+    res.status(500).json({ error: "Erro ao verificar se o número existe" });
+  }
+}
+
+export async function checkNomeExists(req, res) {
+  try {
+    const { nome } = req.query;
+    if (nome) {
+      const matrizes = await Matrizes.find({ nome: nome });
+      if (matrizes) {
+        return res
+          .status(200)
+          .json({ exists: true, message: "Nome já existe no banco de dados" });
+      } else {
+        return res
+          .status(200)
+          .json({ exists: false, message: "Nome disponível" });
+      }
+    }
+  } catch (error) {
+    console.error("Error while checking if name exists: ", error);
+    res.status(500).json({ error: "Erro ao verificar se o nome existe" });
   }
 }
 
@@ -63,12 +111,15 @@ export async function postMatrizes(req, res) {
           errorMessage.nome = "Nome já existe no banco de dados.";
         }
 
+        console.log("errorMessage: ", errorMessage);
+
         return res.status(400).json({ error: errorMessage });
       } else {
         return res.status(500).json({ error: "Erro ao criar dados" });
       }
     }
   } catch (error) {
+    console.error("Error while creating data: ", error);
     res.status(500).json({ error: "Erro ao criar dados" });
   }
 }

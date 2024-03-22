@@ -1,5 +1,5 @@
 "use client";
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import { useQueryClient, useMutation } from "react-query";
 import { addMatriz } from "@/lib/helper";
 import Sucesso from "./sucesso";
@@ -50,6 +50,28 @@ export default function FormNovaMatriz() {
     addMutation.mutate(model);
   };
 
+  const handleBlurNumero = async (e) => {
+    const numero = e.target.value;
+    const response = await fetch(`/api/matrizes?numero=${numero}`);
+    const data = await response.json();
+
+    if (data.exists) {
+      alert("Número já existe no banco de dados.");
+      document.getElementById("numero").value = "";
+    }
+  };
+
+  const handleBlurNome = async (e) => {
+    const nome = e.target.value;
+    const response = await fetch(`/api/matrizes?nome=${nome}`);
+    const data = await response.json();
+
+    if (data.exists) {
+      alert("Nome já existe no banco de dados.");
+      document.getElementById("nome").value = "";
+    }
+  };
+
   if (addMutation.isLoading) return <div>Loading...</div>;
   if (addMutation.isError)
     return <Erro message={addMutation.error.message}></Erro>;
@@ -71,6 +93,7 @@ export default function FormNovaMatriz() {
               id="numero"
               type="number"
               onChange={setFormData}
+              onBlur={handleBlurNumero}
               name="numero"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
               placeholder="Número"
@@ -88,6 +111,7 @@ export default function FormNovaMatriz() {
               id="nome"
               type="text"
               onChange={setFormData}
+              onBlur={handleBlurNome}
               name="nome"
               className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               placeholder="Nome"
